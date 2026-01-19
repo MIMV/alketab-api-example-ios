@@ -184,10 +184,16 @@ class AlKetabSearchViewModel: ObservableObject {
         SearchResult(
             id: verse.id,
             verseText: verse.textWithHighlight,
-            surahName: verse.surahNameEnglish,  // Using English name for English app
+            surahNameArabic: verse.surahName,
+            surahNameEnglish: verse.surahNameEnglish,
             surahNumber: verse.surahID,
             ayahNumber: verse.ayahID,
-            pageNumber: verse.pageNumber
+            pageNumber: verse.pageNumber,
+            recitationURL: verse.recitationURL,
+            prevAyaText: verse.prevAyaText,
+            nextAyaText: verse.nextAyaText,
+            prevAyaID: verse.prevAyaID,
+            nextAyaID: verse.nextAyaID
         )
     }
 }

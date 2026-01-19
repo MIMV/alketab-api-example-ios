@@ -256,9 +256,12 @@ class AlKetabSearchService {
                 ayahID: identifier.ayaId ?? 0,
                 pageNumber: page,
                 theme: wrapper.theme,
-                recitationURL: ayaData.recitation
+                recitationURL: ayaData.recitation,
+                prevAyaText: ayaData.prevAya?.text,
+                nextAyaText: ayaData.nextAya?.text,
+                prevAyaID: ayaData.prevAya?.id,
+                nextAyaID: ayaData.nextAya?.id
             )
-            
             verses.append(verse)
         }
         

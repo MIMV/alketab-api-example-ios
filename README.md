@@ -2,7 +2,19 @@
 
 This is an open-source example project demonstrating how to integrate the **AlKetab AI Search API** into an iOS application using SwiftUI.
 
+![App Screenshot](Screenshot.jpg)
+
 The goal of this project is to show developers how to build a premium, AI-powered Quran search experience using the AlKetab API.
+
+## ✨ Features
+
+*   **AI-Powered Search**: Ask natural language questions to find the most relevant verses.
+*   **Contextual Display**: View verses with their surrounding context (Previous and Next Ayahs).
+*   **Audio Recitation**: Listen to high-quality audio for each verse directly from the search results.
+*   **Beautiful Typography**: Uses authentic Uthmanic font with Arabic numbering.
+*   **Dual-Language**: Displays Surah names in both Arabic and English.
+*   **Smart Pagination**: Efficiently loads more results as you scroll.
+
 
 ## � Getting Started
 

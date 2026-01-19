@@ -11,30 +11,66 @@ struct SearchResultRow: View {
     let result: SearchResult
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // Header: Surah and Ayah info
+        VStack(alignment: .center, spacing: 2) {
+            // Header: Surah and Play info
             HStack {
-                Text("\(result.surahName)")
+                Text("\(result.surahNameEnglish) - \(result.surahNameArabic)")
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.accentColor)
                 
                 Spacer()
                 
-                Text("Ayah \(result.ayahNumber)")
-                    .font(.system(size: 14))
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Color.secondary.opacity(0.1))
-                    .cornerRadius(6)
+                SearchAudioPlayButton(audioURLString: result.recitationURL)
+            }
+            .padding(8)
+            .background(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(Color.accentColor.opacity(0.2))
+                    .shadow(radius: 4)
+            )
+            .padding(.bottom)
+            
+            // Previous Ayah (Context)
+            if let prevText = result.prevAyaText, let prevID = result.prevAyaID {
+                let number = convertToArabic(prevID)
+                Text(prevText + "\u{00a0}" + number)
+                    .font(.custom("KFGQPC HAFS Uthmanic Script", size: 18))
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(6)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .stroke(Color.secondary.opacity(0.3), lineWidth: 1, antialiased: true)
+                    )
             }
             
             // Verse Text
-            Text(parseHTMLHighlighting(result.verseText))
+            let arabicNumber = convertToArabic(result.ayahNumber)
+            let mainText =
+            parseHTMLHighlighting(result.verseText) + AttributedString("\u{00a0}\(arabicNumber)")
+            
+            Text(mainText)
                 .font(.custom("KFGQPC HAFS Uthmanic Script", size: 27))
                 .lineSpacing(8)
                 .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity, alignment: .trailing)
+                .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.vertical, 4)
+            
+            // Next Ayah (Context)
+            if let nextText = result.nextAyaText, let nextID = result.nextAyaID {
+                let number = convertToArabic(nextID)
+                Text(nextText + "\u{00a0}" + number)
+                    .font(.custom("KFGQPC HAFS Uthmanic Script", size: 18))
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(6)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .stroke(Color.secondary.opacity(0.3), lineWidth: 1, antialiased: true)
+                    )
+            }
         }
         .padding()
         .background(Color(UIColor.secondarySystemGroupedBackground))
@@ -43,6 +79,17 @@ struct SearchResultRow: View {
     }
     
     // MARK: - Helper Methods
+    
+    private func convertToArabic(_ number: Int) -> String {
+        let arabicDigits = Array("٠١٢٣٤٥٦٧٨٩")  // 0 to 9
+        
+        return "\(number)".map { char in
+            if let digit = char.wholeNumberValue {
+                return String(arabicDigits[digit])
+            }
+            return String(char)
+        }.joined()
+    }
     
     /// Parse HTML highlighted text and convert to AttributedString
     private func parseHTMLHighlighting(_ htmlText: String) -> AttributedString {
@@ -109,6 +156,35 @@ struct SearchResultRow: View {
         case "brown": return .brown
         case "gray", "grey": return .gray
         default: return .accentColor  // Fallback
+        }
+    }
+}
+
+// MARK: - Previews
+
+struct SearchResultRow_Previews: PreviewProvider {
+    static var previews: some View {
+        let mockResult = SearchResult(
+            id: 1,
+            verseText:  "إِنَّ ٱلَّذِينَ كَفَرُوا سَوَآءٌ عَلَيْهِمْ ءَأَنذَرْتَهُمْ أَمْ لَمْ تُنذِرْهُمْ لَا يُؤْمِنُونَ",
+            surahNameArabic: "البقرة",
+            surahNameEnglish: "Al-Baqarah",
+            surahNumber: 2,
+            ayahNumber: 6,
+            pageNumber: 1,
+            recitationURL: nil,
+            prevAyaText: "أُولَـٰٓئِكَ عَلَىٰ هُدًى مِّن رَّبِّهِمْ ۖ وَأُولـٰٓئِكَ هُمُ ٱلْمُفْلِحُونَ",
+            nextAyaText: "خَتَمَ ٱللَّهُ عَلَىٰ قُلُوبِهِمْ وَعَلَىٰ سَمْعِهِمْ ۖ وَعَلَىٰٓ أَبْصَـٰرِهِمْ غِشَـٰوَةٌۭ ۖ وَلَهُمْ عَذَابٌ عَظِيمٌۭ",
+            prevAyaID: 5,
+            nextAyaID: 7
+        )
+        
+        return ZStack {
+            Color(UIColor.systemGroupedBackground)
+                .edgesIgnoringSafeArea(.all)
+            
+            SearchResultRow(result: mockResult)
+                .padding()
         }
     }
 }
