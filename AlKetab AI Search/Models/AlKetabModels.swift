@@ -55,11 +55,19 @@ struct AlKetabAI: Decodable {
     let explain: String?
     let generatedQuery: String?
     let sortBy: String?
+    let userQuery: String?
+    let queryLanguage: String?
+    let userQueryProofread: String?
+    let aiTimingMS: Int?
     
     enum CodingKeys: String, CodingKey {
         case explain
         case generatedQuery = "generated_query"
         case sortBy = "sort_by"
+        case userQuery = "user_query"
+        case queryLanguage = "query_language"
+        case userQueryProofread = "proofread_user_query"
+        case aiTimingMS = "ai_timing_ms"
     }
     
     /// Convert sortBy string to SortOrder enum
